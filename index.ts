@@ -41,7 +41,7 @@ function checkUserExist(req: Request, res: Response, next: NextFunction) {
 }
 
 app.post('/usuario', (req, res) => {
-    const { name, username } = req.body;    
+    const { name, username } = req.body;
 
     const userRepeated = arrayDeUsersTemp.find((arrayDeUsersTemp) => arrayDeUsersTemp.username === username);
 
@@ -87,16 +87,22 @@ app.get('/tecnologia', checkUserExist, (req, res) => {
     return res.json(user);
 })
 
-app.put('/tecnologia', (req, res) => {
+app.put('/tecnologia/:id', checkUserExist, (req, res) => {
+    const { title, deadline } = req.body;
+    const { id } = req.params;
+    const technologiesExist: technologies = req.user.technologies.find(tec => tec.id === id);
+    technologiesExist.title = title;
+    technologiesExist.deadline = new Date();
     
+    return res.status(200).json(technologiesExist);
 })
 
-app.delete('/tecnologia', (req, res) => {
+app.delete('/tecnologia', checkUserExist, (req, res) => {
 
 })
 
-app.patch('/tecnologia', (req, res) => {
-
+app.patch('/tecnologia/:id/:studied', (req, res) => {
+    
 })
 
 
