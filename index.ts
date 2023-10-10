@@ -29,9 +29,10 @@ const arrayDeUsersTemp = [] as userTemp[];
 function checkUserExist(req: Request, res: Response, next: NextFunction) {
     const { username } = req.headers;
     const userExist = arrayDeUsersTemp.find((arrayDeUsersTemp) => arrayDeUsersTemp.username === username);
+    // console.log(userExist);
 
     if (!userExist) {
-        return res.status(400).json({ error: 'Mensagem do erro' })
+        return res.status(400).json({ error: 'Usuario inexistente!' })
     }
 
     req.user = userExist;
@@ -40,11 +41,11 @@ function checkUserExist(req: Request, res: Response, next: NextFunction) {
 }
 
 app.post('/usuario', (req, res) => {
-    const { name, username } = req.body;
+    const { name, username } = req.body;    
 
     const userRepeated = arrayDeUsersTemp.find((arrayDeUsersTemp) => arrayDeUsersTemp.username === username);
 
-    if (!userRepeated) {
+    if (userRepeated) {
         return res.status(400).json({ error: 'Username já cadastrado!' })
     }
 
@@ -55,7 +56,7 @@ app.post('/usuario', (req, res) => {
         technologies: []
     }
 
-
+    arrayDeUsersTemp.push(newUser);
     return res.status(200).json(newUser);
 
 });
@@ -76,17 +77,18 @@ app.post('/tecnologia', checkUserExist, (req, res) => {
 
     userGlobal.technologies.push(newTechnology);
 
-    console.log(arrayDeUsersTemp);
+    // console.log(arrayDeUsersTemp);
     return res.json(newTechnology);
 });
 
 
-app.get('/tecnologia', (req, res) => {
-
+app.get('/tecnologia', checkUserExist, (req, res) => {
+    const user = req.user as userTemp;
+    return res.json(user);
 })
 
 app.put('/tecnologia', (req, res) => {
-
+    
 })
 
 app.delete('/tecnologia', (req, res) => {
