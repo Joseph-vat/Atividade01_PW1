@@ -93,16 +93,24 @@ app.put('/tecnologia/:id', checkUserExist, (req, res) => {
     const technologiesExist: technologies = req.user.technologies.find(tec => tec.id === id);
     technologiesExist.title = title;
     technologiesExist.deadline = new Date();
-    
+
     return res.status(200).json(technologiesExist);
 })
 
 app.delete('/tecnologia', checkUserExist, (req, res) => {
-
+    
 })
 
-app.patch('/tecnologia/:id/:studied', (req, res) => {
+app.patch('/tecnologia/:id/:studied', checkUserExist, (req, res) => {
+    const { id } = req.params;
+    const { studied } = req.params;
+    console.log(id, studied);
     
+    const technologiesExist: technologies = req.user.technologies.find(tec => tec.id === id);
+    
+    console.log('technologiesExist');
+    technologiesExist.studied = studied;
+    return res.status(200).json(technologiesExist);
 })
 
 
