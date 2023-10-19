@@ -1,13 +1,10 @@
 import { UUID, randomUUID } from "crypto";
 import { Request, Response, NextFunction } from 'express';
 
-
 const express = require('express');
 const { v4: uuidv4 } = require('uuid')
 const app = express();
-
 app.use(express.json());
-
 
 type technologies = {
     id: UUID,
@@ -68,7 +65,7 @@ app.post('/tecnologia', checkUserExist, (req, res) => {
     const newTechnology: technologies = {
         id: uuidv4(),
         title,
-        studied,
+        studied: false,
         deadline: new Date(deadline),
         created_at: new Date()
     }
@@ -80,7 +77,6 @@ app.post('/tecnologia', checkUserExist, (req, res) => {
     // console.log(arrayDeUsersTemp);
     return res.status(201).json(newTechnology);
 });
-
 
 app.get('/tecnologia', checkUserExist, (req, res) => {
     const user = req.user as userTemp;
@@ -99,22 +95,22 @@ app.put('/tecnologia/:id', checkUserExist, (req, res) => {
 
 app.patch('/tecnologia/:id/:studied', checkUserExist, (req, res) => {
     const { id } = req.params;
-    const { studied } = req.params;
-    console.log(id, studied);
-    
+
     const technologiesExist: technologies = req.user.technologies.find(tec => tec.id === id);
     
-    console.log('technologiesExist');
-    technologiesExist.studied = studied;
+    technologiesExist.studied = true;
     return res.status(201).json(technologiesExist);
 })
 
 app.delete('/tecnologia/:id', checkUserExist, (req, res) => {
     const { id } = req.params;
+    console.log(id);
     
-    const userRepeated = arrayDeUsersTemp.find((arrayDeUsersTemp) => arrayDeUsersTemp.id === id);
+    const idExist: technologies = req.user.technologies.find(tec => tec.id === id);
 
-    if (!userRepeated) {
+    console.log(idExist);
+
+    if (!idExist) {
         return res.status(404).json({ error: 'Id inválido!' })
     }
 
@@ -127,9 +123,7 @@ app.delete('/tecnologia/:id', checkUserExist, (req, res) => {
     return res.status(200).json(technologiesExist);
 })
 
-
 const port = 4000;
-
 app.listen(port, () => {
     console.log(`Servidor rodando na porta ${port}`);
 })
